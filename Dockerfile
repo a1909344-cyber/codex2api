@@ -1,24 +1,21 @@
-# 1. 使用 Node 运行环境
-FROM node:18-alpine
+# 使用完整的 Node.js 镜像，不再用 alpine 版本，因为它内置了 Python 和编译工具
+FROM node:18
 
-# 2. 安装编译 better-sqlite3 所需的依赖 (Python, Make, G++)
-# alpine 镜像非常小，所以必须手动安装这些构建工具
-RUN apk add --no-cache python3 make g++
-
-# 3. 设置工作目录
+# 设置工作目录
 WORKDIR /app
 
-# 4. 复制配置文件
+# 复制配置文件
 COPY package*.json ./
 
-# 5. 安装项目依赖
+# 安装依赖
+# 在这个镜像里，npm install 通常能直接成功，因为它自带了编译环境
 RUN npm install
 
-# 6. 复制所有源码
+# 复制其余源码
 COPY . .
 
-# 7. 暴露端口 (codex2api 常用端口)
+# 暴露端口
 EXPOSE 8080
 
-# 8. 启动程序
+# 启动程序
 CMD ["npm", "start"]
