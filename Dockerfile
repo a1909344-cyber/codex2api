@@ -1,21 +1,20 @@
-# 使用完整的 Node.js 镜像，不再用 alpine 版本，因为它内置了 Python 和编译工具
 FROM node:18
 
-# 设置工作目录
 WORKDIR /app
 
-# 复制配置文件
+# 复制 package.json
 COPY package*.json ./
 
 # 安装依赖
-# 在这个镜像里，npm install 通常能直接成功，因为它自带了编译环境
 RUN npm install
 
-# 复制其余源码
+# 复制所有文件
 COPY . .
 
-# 暴露端口
+# 确保 lib 目录存在（以防万一）
+RUN mkdir -p lib
+
+# 暴露项目端口 (如果 README 说的是其他端口，请修改这里)
 EXPOSE 8080
 
-# 启动程序
-CMD ["npm", "start"]
+CMD ["node", "server.mjs"]
